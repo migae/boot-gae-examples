@@ -34,7 +34,9 @@ tmp/greeter, tmp/uploader".  You can ignore this, or you can add the
 service components to the `:dependencies` vector.
 
 NOTE: You will also see "Classpath conflict: org.clojure/clojure
-version 1.8.0 already loaded, NOT loading version 1.4.0".  This is caused by
+version 1.8.0 already loaded, NOT loading version 1.4.0".  This is
+caused by `me.raynes/fs` which depends on the older version of
+Clojure.
 
 == how it works
 
