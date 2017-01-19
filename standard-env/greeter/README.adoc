@@ -86,7 +86,7 @@ Building `greeter` as a service is simple:
        :version +version+}
 ----
 
-* use the `--service` switch when running the `gae/build` and `gae/monitor` tasks.
+* use the `-s` (`--service`) switch when running the `gae/build` and `gae/monitor` tasks.
 
 * build each service separately using `boot gae/build -s`
 
@@ -96,7 +96,7 @@ Building `greeter` as a service is simple:
   instead, run the assembled app from its root directory (in these
   examples, `microservices-app/`)
 
-* do run `gae/monitor` from the root directory of the service project.
+* do run `gae/monitor -s` from the root directory of the service project.
 
 == troubleshooting
 
