@@ -42,7 +42,8 @@ Clojure.
 
 * the service components must be installed (or available from a repo)
 
-* service components must be listed in the `:checkouts` vector of `build.boot`.
+* service components must be listed in the `:checkouts` vector of the
+  application's link:build.boot[build.boot].
 
 * the `services.edn` file must be properly written; this should be
   self-evident from the sample code (in link:config/services.edn[config/services.edn]).
