@@ -8,7 +8,9 @@ environment] supports two kinds of web application:
 
 * Services-based applications.  This kind of application is composed
   of one or more WAR directories, each of which acts as an independent
-  service.
+  service.  See
+  https://cloud.google.com/appengine/docs/java/configuration-files[Configuration
+  Files] for an explanation of the structure of such applications.
 
 The https://cloud.google.com/appengine/docs/java/[Java Standard
 Environment documentation] covers both cases.
