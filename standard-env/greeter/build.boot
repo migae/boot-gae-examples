@@ -1,20 +1,6 @@
 (def +project+ 'tmp/greeter)
 (def +version+ "0.1.0-SNAPSHOT")
 
-;; gae does not yet support java 1.8
-;; to set java version on os x put this in ~/.bash_profile
-;; function setjdk() {
-;;   if [ $# -ne 0 ]; then
-;;    removeFromPath '/System/Library/Frameworks/JavaVM.framework/Home/bin'
-;;    if [ -n "${JAVA_HOME+x}" ]; then
-;;     removeFromPath $JAVA_HOME
-;;    fi
-;;    export JAVA_HOME=`/usr/libexec/java_home -v $@`
-;;    export PATH=$PATH:$JAVA_HOME/bin
-;;   fi
-;;  }
-;; then:  $ setjdk 1.7
-
 (set-env!
  :gae {:app-id "microservices-app"  ; +project+
        :module {:name "greeter"
