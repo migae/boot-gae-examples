@@ -40,13 +40,25 @@ Clojure.
 
 == how it works
 
+* see
+  https://cloud.google.com/appengine/docs/java/configuration-files[Configuration
+  FILES] for the official explanation of the structure of
+  service-based GAE apps.
+
 * the service components must be installed (or available from a repo)
 
 * service components must be listed in the `:checkouts` vector of the
   application's link:build.boot[build.boot].
 
+* the application project contains no source code; it only assembles
+  component services into an app.
+
 * the `services.edn` file must be properly written; this should be
   self-evident from the sample code (in link:config/services.edn[config/services.edn]).
+
+** this and the `:checkouts` vector are used to generate the required
+   `appengine-application.xml` and `application.xml` files in the
+   META-INF directory.
 
 * the directory containing `services.edn` must be listed in `:source-paths`
 
