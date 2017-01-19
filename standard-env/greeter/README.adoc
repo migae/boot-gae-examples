@@ -4,26 +4,29 @@ A simple https://cloud.google.com/appengine/docs/java/[Google App
 Engine] webapp, written in 100% https://clojure.org/[Clojure], built
 with http://boot-clj.com/[Boot].
 
-IMPORTANT: you do not need a GAE account to experiment!  The GAE SDK
+IMPORTANT: You do not need a GAE account to experiment!  The GAE SDK
 contains everything you need to run webapps on the local devserver;
 you only need a GAE account if you want to deploy to the production
 servers.
 
-[NOTE]
-====
-Use of App Engine services such as the Datastore is beyond the scope of
+NOTE: Use of App Engine services such as the Datastore is beyond the scope of
 this example.  Its sole purpose is to demonstrate the how easy it is
 to use https://github.com/migae/boot-gae[boot-gae] to get a Clojure
 webapp up and running on GAE with a repl-like development environment.
-====
+
 
 == getting started
 
+Fork or clone
+https://github.com/migae/boot-gae-examples[boot-gae-examples].
+
+Change directory to `standard-env/greeter` and edit `build.boot` to
+set the `:app-dir` entry in the `:module` map of the `:gae` map to
+point to wherever you installed the repo.  Then run:
+
 [source,shell]
 ----
-$ git clone https://github.com/migae/boot-gae.git
-$ cd boot-gae/tasklib
-$ boot pom jar install
+$ boot gae/build gae/run
 ----
 
 WARNING: The first time you run `boot` with the GAE Java SDK
@@ -31,20 +34,15 @@ dependency, the SDK zip file will be downloaded.  This is a large file
 so it may take a _very_ long time; be patient.  To monitor progress,
 use the `-vv` switch with the `boot` command, e.g. `$ boot -vv help`
 will download the dependencies before showing the help screen, and
-`-vv` will display download progress.  Once `$ boot pom jar install`
-completes, run:
+`-vv` will display download progress.
 
-[source,clojure]
-----
-$ cd ../greetings
-$ ./boot.sh gae/build gae/target gae/run
-----
 
-To see the transient `web.xml.edn` and `*.clj` files used to configure the app, use the `-k` switch with `build`:
+To see the transient `web.xml.edn` and `*.clj` files used to configure
+the app, use the `-k` switch with `build`:
 
 [source,sh]
 ----
-$ ./boot.sh gae/build -k gae/target gae/run
+$ boot gae/build -k gae/run
 ----
 
 Note the use of `gae/target` rather than the built-in `target` task.
@@ -64,7 +62,9 @@ $ boot gae/monitor
 
 The `gae/monitor` task is a convenience wrapper that uses boot's
 `watch` task to detect changes to the source tree, then propagates
-changes to the correct target dirctory.
+changes to the correct target dirctory.  A `reloader` filter generated
+by the `gae/build` task will then reload the changed namespaces when
+the page is refreshed.
 
 Now you can edit the source, and your changes will be included when
 you reload the webpage.  For example, go to
@@ -73,11 +73,33 @@ you reload the webpage.  For example, go to
 
 If you need to change the configuration, for example to add another
 servlet, you'll have to restart the server.  Rerun `boot gae/build
-target` to reconfigure the webapp, then run `boot gae/run` again.
+gae/target` to reconfigure the webapp, then run `boot gae/run` again.
 
-Remember that with boot it is not enough to run `gae/build`; you than have
-to run the `target` task to put the results of the build on disk where
-appengine expects them.
+Remember that with boot it is not enough to run `gae/build`; you than
+have to run the `target` task to put the results of the build on disk
+where appengine expects them.  Be sure to use `gae/target`, not the
+built-in `target` task.
+
+= build as a service
+
+Building `greeter` as a service is simple:
+
+* add a `:module` entry to the `:gae` map in your `build.boot` file,
+  giving e.g.
+
+[source,clojure]
+----
+ :gae {:app-id "microservices-app"  ; +project+
+       :module {:name "greeter"
+                :app-dir (str (System/getProperty "user.home")
+                              "/boot/boot-gae-examples/standard-env/microservices-app")}
+       :version +version+}
+----
+
+* use the `--service` switch when running the `gae/build` and `gae/monitor` tasks.
+
+* build each service separately using `boot gae/build -s`
+* install each service jar locally:  `boot install -f target/<servicename>/<servicejar>`
 
 == troubleshooting
 

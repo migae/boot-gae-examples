@@ -204,10 +204,11 @@ Then, from the `greeter` project:
 
 [source,sh]
 ----
-greeter/ $ boot gae/monitor target --no-clean --dir $HOME/boot/boot-gae-examples/standard-env/microservices-app/target/greeter
+greeter/ $ boot gae/monitor -s
 ----
 
-NOTE:  This is admittedly clumsy; the TODO list includes making this simpler.
+This uses the `:app-dir` entry of the `:module` map in the `:gae` map
+in `build.boot` to determine where to copy changed files.
 
 == troubleshooting
 
