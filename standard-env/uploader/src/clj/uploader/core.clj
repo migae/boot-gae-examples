@@ -1,8 +1,8 @@
 (ns uploader.core
   (:import [java.io  ByteArrayInputStream InputStreamReader PushbackReader])
-
+  (:refer-clojure :exclude [read])
   (:require [clojure.tools.logging :as log :refer [debug info]] ;; :trace, :warn, :error, :fatal
-            [clojure.tools.reader.edn :as edn :refer [read read-string]]
+            [clojure.tools.reader.edn :as edn :refer [read]]
             [compojure.core :refer :all]
             [compojure.route :as route]
             [cheshire.core :as json]
@@ -22,20 +22,20 @@
      "UTF-8")))
 
 (defn read-stream [s]
-  (clojure.edn/read
+  (edn/read
    {:eof :theend}
    s))
 
 (defroutes upload-routes
   (POST "/upload" {mp :multipart-params :as req}
-        (log/debug "POST " (:uri req))
+;;        (log/info "POST " (:uri req))
         ;; (log/debug "schemata: " (em/dump-schemata))
         (let [{:keys [filename content-type bytes]} (get mp "file")
               s (stream bytes)]
           (let [edn-seq (repeatedly (partial read-stream s))]
             (dorun (map
                     #(do
-                       (println "PAYLOAD: ")
+                       (log/info "UPLOADED PAYLOAD: ")
                        (if (meta %)
                          (print (str "^" (meta %))))
                        (let [kind (:kind %)
@@ -44,12 +44,12 @@
                              ;; schema (em/schema type) ;
                              ;; kws (into [] (for [fld schema] (keyword (:name fld))))
                              data (:data %)]
-                         (println (str "kind: " kind))
-                         (println (str "type: " type))
-                         ;; (println (str "schema kw: " schema-kw))
-                         ;; (println (str "schema: " schema))
-                         ;; (println (str "kws: " kws))
-                         (println (str "data: " data))
+                         (log/info (str "kind: " kind))
+                         (log/info (str "type: " type))
+                         ;; (log/info (str "schema kw: " schema-kw))
+                         ;; (log/info (str "schema: " schema))
+                         ;; (log/info (str "kws: " kws))
+                         (log/info (str "data: " data))
                          (doseq [datum data]
                            (log/debug "datum" datum))))
                     (take-while (partial not= :theend) edn-seq))))
