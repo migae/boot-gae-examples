@@ -1,7 +1,8 @@
 (ns goodbye-filter
   (:import (javax.servlet Filter FilterChain FilterConfig
                           ServletRequest ServletResponse))
-  (:require [ns-tracker.core :refer :all]))
+  (:require [clojure.tools.logging :as log :refer [debug info]] ;; :trace, :warn, :error, :fatal
+            [ns-tracker.core :refer :all]))
 
 (defn -init [^Filter this ^FilterConfig cfg]
   (println "goodbye-filter init invoked"))
@@ -14,7 +15,7 @@
    ^ServletRequest rqst
    ^ServletResponse resp
    ^FilterChain chain]
-  (println "inbound:  goodbye-filter on: " (str (.getMethod rqst) " " (.getRequestURL rqst)))
+  (log/info "inbound:  goodbye-filter on: " (str (.getMethod rqst) " " (.getRequestURL rqst)))
   (.doFilter chain rqst resp)
-  (println "outbound: goodbye-filter on: " (str (.getMethod rqst) " " (.getRequestURL rqst)))
+  (log/info "outbound: goodbye-filter on: " (str (.getMethod rqst) " " (.getRequestURL rqst)))
   )

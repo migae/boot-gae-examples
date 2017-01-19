@@ -1,13 +1,14 @@
 (ns hello-filter
   (:import (javax.servlet Filter FilterChain FilterConfig
                           ServletRequest ServletResponse))
-  (:require [ns-tracker.core :refer :all]))
+  (:require [clojure.tools.logging :as log :refer [debug info]] ;; :trace, :warn, :error, :fatal
+            [ns-tracker.core :refer :all]))
 
 (defn -init [^Filter this ^FilterConfig cfg]
-  (println "hello-filter init invoked"))
+  (log/info "hello-filter init invoked"))
 
 (defn -destroy [^Filter this]
-  (println "hello-filter destroy invoked"))
+  (log/info "hello-filter destroy invoked"))
 
 #_(defn make-dofilter-method
   "Turns a handler into a function that takes the same arguments and has the
@@ -32,6 +33,6 @@
    ^ServletRequest rqst
    ^ServletResponse resp
    ^FilterChain chain]
-  (println "INBOUND:  hello-filter on: " (str (.getMethod rqst) " " (.getRequestURL rqst)))
+  (log/info "INBOUND:  hello-filter on: " (str (.getMethod rqst) " " (.getRequestURL rqst)))
   (.doFilter chain rqst resp)
-  (println "outbound: hello-filter on: " (str (.getMethod rqst) " " (.getRequestURL rqst))))
+  (log/info "outbound: hello-filter on: " (str (.getMethod rqst) " " (.getRequestURL rqst))))

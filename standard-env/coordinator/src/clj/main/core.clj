@@ -1,5 +1,6 @@
 (ns main.core
-  (:require [compojure.core :refer :all]
+  (:require [clojure.tools.logging :as log :refer [debug info]] ;; :trace, :warn, :error, :fatal
+            [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.util.response :as rsp]
             [ring.util.servlet :as ring]
@@ -8,9 +9,9 @@
 
 (defroutes main-routes
     (GET "/main" [name :as rqst]
-         (do (println "main servlet handler:  main.core on " (:request-method rqst)
+         (do (log/info "main servlet handler:  main.core on " (:request-method rqst)
                       (str (.getRequestURL (:servlet-request rqst))))
-             (-> (rsp/response (str "HOWDY there, from main.core servlet"))
+             (-> (rsp/response (str "Hello there, from main.core servlet"))
                  (rsp/content-type "text/html"))))
     (route/not-found "<h1>main route not found</h1>"))
 

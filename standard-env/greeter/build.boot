@@ -3,10 +3,10 @@
 
 (set-env!
  :gae {:app-id "microservices-app"  ; +project+
+       :version +version+
        :module {:name "greeter"
                 :app-dir (str (System/getProperty "user.home")
-                              "/boot/boot-gae-examples/standard-env/microservices-app")}
-       :version +version+}
+                              "/boot/boot-gae-examples/standard-env/microservices-app")}}
  :asset-paths #{"resources/public"}
  :resource-paths #{"src/clj" "filters"}
  :source-paths #{"config" "src/java"}
@@ -16,6 +16,8 @@
                 "clojars" "https://clojars.org/repo"}
 
  :dependencies   '[[org.clojure/clojure "1.8.0" :scope "runtime"]
+                   [org.clojure/tools.logging "0.3.1"]
+
                    [migae/boot-gae "0.1.0-SNAPSHOT" :scope "test"]
 
                    [javax.servlet/servlet-api "2.5" :scope "provided"]
