@@ -45,12 +45,6 @@ the app, use the `-k` switch with `build`:
 $ boot gae/build -k gae/run
 ----
 
-Note the use of `gae/target` rather than the built-in `target` task.
-
-NOTE: Use of `boot.sh` is optional; you can also just run `$ boot
-gae/build`, etc.  `boot.sh` uses the JVM options in
-`./.boot-jvm-options`.  See
-https://github.com/boot-clj/boot/wiki/JVM-Options[JVM Options].
 
 To get a repl-like dev environment, open a second terminal and start a
 monitor:
@@ -62,7 +56,7 @@ $ boot gae/monitor
 
 The `gae/monitor` task is a convenience wrapper that uses boot's
 `watch` task to detect changes to the source tree, then propagates
-changes to the correct target dirctory.  A `reloader` filter generated
+changes to the correct target directory.  A `reloader` filter generated
 by the `gae/build` task will then reload the changed namespaces when
 the page is refreshed.
 
@@ -72,13 +66,9 @@ you reload the webpage.  For example, go to
 `src/clj/greetings/hello.clj`.  Save your edit, then reload the page.
 
 If you need to change the configuration, for example to add another
-servlet, you'll have to restart the server.  Rerun `boot gae/build
-gae/target` to reconfigure the webapp, then run `boot gae/run` again.
+servlet, you'll have to restart the server.  Rerun `boot gae/build` to
+reconfigure the webapp, then run `boot gae/run` again.
 
-Remember that with boot it is not enough to run `gae/build`; you than
-have to run the `target` task to put the results of the build on disk
-where appengine expects them.  Be sure to use `gae/target`, not the
-built-in `target` task.
 
 = build as a service
 
@@ -99,7 +89,14 @@ Building `greeter` as a service is simple:
 * use the `--service` switch when running the `gae/build` and `gae/monitor` tasks.
 
 * build each service separately using `boot gae/build -s`
+
 * install each service jar locally:  `boot install -f target/<servicename>/<servicejar>`
+
+* do not use `gae/run` in the root directory of the service project;
+  instead, run the assembled app from its root directory (in these
+  examples, `microservices-app/`)
+
+* do run `gae/monitor` from the root directory of the service project.
 
 == troubleshooting
 
