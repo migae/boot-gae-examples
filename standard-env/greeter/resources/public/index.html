@@ -2,12 +2,12 @@
 <html>
   <head>
     <meta charset="UTF-8">
-      <title>migae compojure demo</title>
+      <title>gae service demo</title>
     </head>
 
     <body>
       <p>
-	This is a static page, 'index.html', not served by a servlet.
+	This is a static page, 'index.html', of the 'greeter' service.
       </p>
 
       <p>
@@ -27,7 +27,13 @@
 
       <p>
 	<h4>Google Appstats:</h4>
-	<li><a href="/admin/appstats">/admin/appstats</a></li>
+	<b>WARNING: there seems to be a problem with appstats. Seems to work ok for a servlet app, but not for a service component of a services-based app.</b>
+	There
+	are some problem reports marked as "fixed", but that seems not
+	to be the case.  See <a
+	href="https://code.google.com/p/googleappengine/issues/detail?id=7052">Appstats
+	produces ClassCastException after appserver reload</a> <li><a
+	href="/admin/appstats">/admin/appstats</a></li>
       </p>
 
     </body>
