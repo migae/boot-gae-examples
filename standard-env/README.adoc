@@ -76,6 +76,11 @@ README for link:microservices-app[microservices-app] explains how
 `boot-gae` assembles a service-based app from independently developed
 services.
 
+NOTE: See
+  https://cloud.google.com/appengine/docs/java/configuration-files[Configuration
+  Files] for the official explanation of the structure of
+  services-based application.
+
 Very briefly, the most obvious difference between a servlet app and a
 services app is in the root directory.  For a servlet, the root
 directory (default: `target/`) will contain `WEB-INF` and any public
