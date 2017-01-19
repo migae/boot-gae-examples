@@ -2,3 +2,66 @@
 
 A sample application demonstrating assembly of a service-based
 application in the GAE Standard Environment.
+
+Note that there is no source code for this project; it will assemble
+service components into an app.
+
+Steps:
+
+1.  Build each service using the `-s` (`--service`) switch, e.g.
+
+[source,sh]
+----
+$ cd greeter
+$ boot gae/build -s
+$ boot install -f target/greeter/greeter-0.1.0-SNAPSHOT.jar
+----
+
+2. Switch to the `microservices-app` dir, build and run:
+
+[source,sh]
+----
+$ cd ../microservices-app
+$ boot gae/assemble gae/run
+----
+
+To interactively develop services, run `boot gae/monitor -s` in the
+root directory of each service project.
+
+NOTE: Currently you will see some warning messages, e.g. "Checkout
+deps missing from :dependencies in env: tmp.services/main,
+tmp/greeter, tmp/uploader".  You can ignore this, or you can add the
+service components to the `:dependencies` vector.
+
+NOTE: You will also see "Classpath conflict: org.clojure/clojure
+version 1.8.0 already loaded, NOT loading version 1.4.0".  This is caused by
+
+== how it works
+
+* the service components must be installed (or available from a repo)
+
+* service components must be listed in the `:checkouts` vector of `build.boot`.
+
+* the `services.edn` file must be properly written; this should be
+  self-evident from the sample code (in link:config/services.edn[config/services.edn]).
+
+* the directory containing `services.edn` must be listed in `:source-paths`
+
+* the component services must have the correct `:gae` map in their `build.boot` files, e.g.
+
+[source,clojure]
+----
+ :gae {:app-id "microservices-app"  ; +project+
+       :version +version+
+       :module {:name "greeter"
+                :app-dir (str (System/getProperty "user.home")
+                              "/boot/boot-gae-examples/standard-env/microservices-app")}}
+----
+
+* for each service, make sure the `:module :name` value in the
+  service's `build.boot` matches the `:module` name in the
+  `:checkouts` key of the app's `build.boot` and the `:service` entry
+  in `services.edn`.
+
+NOTE: The `services.edn` will probably go away, since `:checkouts` has
+all the information needed by `gae/assemble`.
