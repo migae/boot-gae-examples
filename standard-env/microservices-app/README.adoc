@@ -3,12 +3,12 @@
 A sample application demonstrating assembly of a service-based
 application in the GAE Standard Environment.
 
-Note that there is no source code for this project; it will assemble
-service components into an app.
+Note that there is no source code for this project; it will _assemble_
+(not build) service components into an app.
 
 Steps:
 
-1.  Build each service using the `-s` (`--service`) switch, e.g.
+* Build each service using the `-s` (`--service`) switch, e.g.
 
 [source,sh]
 ----
@@ -17,7 +17,7 @@ $ boot gae/build -s
 $ boot install -f target/greeter/greeter-0.1.0-SNAPSHOT.jar
 ----
 
-2. Switch to the `microservices-app` dir, build and run:
+* Switch to the `microservices-app` dir, assemble, and run:
 
 [source,sh]
 ----
@@ -25,7 +25,7 @@ $ cd ../microservices-app
 $ boot gae/assemble gae/run
 ----
 
-To interactively develop services, run `boot gae/monitor -s` in the
+* To interactively develop services, run `boot gae/monitor -s` in the
 root directory of each service project.
 
 NOTE: Currently you will see some warning messages, e.g. "Checkout
