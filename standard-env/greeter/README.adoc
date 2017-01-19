@@ -94,9 +94,16 @@ Building `greeter` as a service is simple:
 
 * do not use `gae/run` in the root directory of the service project;
   instead, run the assembled app from its root directory (in these
-  examples, `microservices-app/`)
+  examples, `microservices-app/`).  E.g.
 
-* do run `gae/monitor -s` from the root directory of the service project.
+[source,sh]
+----
+$ cd microservices-app
+$ boot gae/assemble gae/run
+----
+
+* do run `gae/monitor -s` (in a separate terminal session) from the
+  root directory of the service project.
 
 == troubleshooting
 
