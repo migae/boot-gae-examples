@@ -1,0 +1,5 @@
+{:filters [{:ns upload-filter
+            :name "upload filter"
+            :display {:name "upload filter"}
+            :urls [{:url "/upload/*"}]
+            :desc {:text "upload filter"}}]}

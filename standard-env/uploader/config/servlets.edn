@@ -1,0 +1,8 @@
+{:servlets [{:ns uploader.core
+             :name "uploader-servlet"
+             :display {:name "Upload Servlet"}
+             :desc {:text "blah blah"}
+             :urls ["/upload/*"]
+             ;; :params [{:name "greeting" :val "Hello"}]
+             ;; :load-on-startup {:order 3}
+             }]}

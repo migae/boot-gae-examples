@@ -1,0 +1,273 @@
+= standard environment examples
+
+The GAE https://cloud.google.com/appengine/docs/about-the-standard-environment[standard
+environment] supports two kinds of web application:
+
+* Standard, Java Servlet applications.  This kind of application
+  consists of a single WAR directory.
+
+* Services-based applications.  This kind of application is composed
+  of one or more WAR directories, each of which acts as an independent
+  service.
+
+The https://cloud.google.com/appengine/docs/java/[Java Standard
+Environment documentation] covers both cases.
+
+`boot-gae` is designed to support both application styles from one
+code base.  Services may be developed as standard, stand-alone servlet
+applications, and then integrated (as microservices) into a
+service-based application.  Quasi-REPL responsiveness is supported in
+both cases.
+
+With `boot-gae`, the programmer configures applications by writing a
+`build.boot` file and some `edn` files.  The `boot-gae` system then
+generates the required WAR directories (and their contents)
+automatically.
+
+The sample code is designed to demonstrate both cases.  Two of the
+examples (`greeter` and `uploader`) can be developed as standard servlet
+apps.  The `microservices-app` example assembles those two apps (as
+services) together with the `coordinator` service to create a
+service-based app.
+
+* link:greeter[greeter] - a "hello world" app that can be used as
+  either as a standard servlet app or a microservice in a
+  service-based app
+* link:uploader[uploader] - an app that can be used as either as a standard servlet
+   app or a microservice in a service-based app.  Demonstrates basic
+   file upload functionality.
+* link:microservices-app[microservices-app] - demonstrates assembly of an application from
+  (possibly independent) services; cannot be built and run as a
+  standard servlet app.
+* link:coordinator[coordinator] - an app designed to be used as the default service of a
+  services-based app.
+
+
+== getting started
+
+IMPORTANT: you do not need a GAE account to experiment!  The GAE SDK
+contains everything you need to run webapps on the local devserver;
+you only need a GAE account if you want to deploy to the production
+servers.
+
+NOTE: Use of App Engine services such as the Datastore is beyond the
+scope of these examples.  Their sole purpose is to demonstrate the use
+of https://github.com/migae/boot-gae[boot-gae] to get Clojure webapps
+up and running on GAE with a repl-like development environment.
+
+Start by building and running link:greeter[greeter] as a standard
+servlet app.
+
+Once you're comfortable working with it as a standard servlet app,
+build it as a service.  As explained in the
+link:greeter/README.adoc[README], this involves a minor change in the
+`build.boot` file.  _You will not directly `gae/run` the service!_
+Instead, you will build all the services required by your
+service-based app, and then assemble and run the app (see
+link:microservices-app[microservices-app] for details).
+
+== how it works
+
+The link:greeter[greeter] README file contains a detailed explanation
+of how `boot-gae` works for building servlet apps and services; the
+README for link:microservices-app[microservices-app] explains how
+`boot-gae` assembles a service-based app from independently developed
+services.
+
+Very briefly, the most obvious difference between a servlet app and a
+services app is in the root directory.  For a servlet, the root
+directory (default: `target/`) will contain `WEB-INF` and any public
+resources (like `index.html`).  This directory will be created and
+populated automatically by `boot-gae`.  There are some other
+differences involving configuration files; for example, a service will
+have a `<module>` element in its `appengine-web.xml` file, and a
+servlet app will not. But `boot-gae` handles all the housekeeping
+transparently, so the programmer will typically not need to even know
+about this, so long as the `build.boot` and `edn` files are properly
+configured.
+
+WARNING: Services must be installed (`boot install`) before they can
+be assembled into an app. This is because the `build.boot` file for
+the service-based app will list services as `checkout` dependencies.
+See the README for link:microservices-app[microservices-app] for details.
+
+For example, if you build `greeter` as a servlet app, the `target`
+directory will have this structure:
+
+[source,sy]
+----
+target/
+    WEB-INF/
+    favicon.ico
+    index.html
+    scripts/
+    styles/
+----
+
+By contrast, building a service will have the same structure, but with
+the insertion of an intermediate sub-directory with the service name.
+In the case of `greeter` as a service:
+
+[source,ch]
+----
+target/
+    greetings/
+        WEB-INF/
+        favicon.ico
+        index.html
+        scripts/
+        styles/
+----
+
+The reason for this is that in the assembled service application, each
+service must be included in a top-level directory of the application's
+`target` directory.  For example, with the `microservices-app` example
+we have (truncated):
+
+[source,sh]
+----
+target/
+    META-INF/
+        ...
+    default/
+        ...
+    greetings/
+        WEB-INF/
+        favicon.ico
+        index.html
+        scripts/
+        styles/
+    uploader/
+        ...
+----
+
+Here `default` is actually the `coordinator` service, automatically
+renamed to make it the default service.
+
+
+WARNING: If you build as a servlet app, and then you want to build as a
+service, you need to delete the `target` directory first. `gae/target`
+will by default remove the target directory, but that is different in
+the two cases: for servlets it is `target/`; for a service named `foo`,
+it will be `target/foo/`.  So building the service will delete
+`target/foo/` but not `target/`, which leaves detritus from the servlet
+build in `target/`.
+
+
+== quasi-REPL
+
+We don't have a genuine REPL, but we do have reload-on-refresh, which
+is almost as good.  You edit your Clojure code in the source tree, and
+your changes will be picked up when you refresh the web page.
+
+==== for servlet apps
+
+Just run the `gae/monitor` task in a separate terminal session.  This
+is a convenience task that composes boot's `watch` task and some
+other tasks, such that changes to the source tree are propagated to
+the appropriate place in the output dir.  This is required by the
+security constraints of GAE, which prevent it from accessing anything
+outside of the web app root directory.
+
+Behind the scenes, `gae/build` by default inserts a `reloader` filter
+in the generated app; this filter monitors the web app directories and
+reloads any changed namespaces.
+
+WARNING: When you are ready to deploy to production, you want to omit
+the `reloader` filter; use the `-p` flag on `gae/build` to do this.
+For details, see the `boot-gae`
+https://github.com/migae/boot-gae/doc/task.adoc[task documentation].
+
+==== for services
+
+If you have services that interact - for example, you might have a
+data-service that is called by a presentation-service - you might need
+to interactively develop them simultaneously.  You can do this by
+running the service-based app and then running `gae/monitor` from the
+project root director of each service (_not_ from the service app's
+root directory).
+
+From the service root dir, you will run `gae/monitor` as for servlet
+apps, but you will add a `target` task to the pipeline, using the `-d`
+flag to pass the directory path of the service-based app (here,
+`microservices-app`).  For example, to interactively work with the
+`greeter` service from the `microservices-app` start by running the
+app:
+
+
+[source,sh]
+----
+microservices-app/ $ boot gae/run
+----
+
+Then, from the `greeter` project:
+
+[source,sh]
+----
+greeter/ $ boot gae/monitor target --no-clean --dir $HOME/boot/boot-gae-examples/standard-env/microservices-app/target/greeter
+----
+
+NOTE:  This is admittedly clumsy; the TODO list includes making this simpler.
+
+== troubleshooting
+
+* Note that services must by installed before they can be assembled
+  into a micro-services app.
+
+
+== obsolete
+
+
+To see the transient `web.xml.edn` and `*.clj` files used to configure the app, use the `-k` switch with `build`:
+
+[source,sh]
+----
+$ ./boot.sh gae/build -k gae/target gae/run
+----
+
+Note the use of `gae/target` rather than the built-in `target` task.
+
+NOTE: Use of `boot.sh` is optional; you can also just run `$ boot
+gae/build`, etc.  `boot.sh` uses the JVM options in
+`./.boot-jvm-options`.  See
+https://github.com/boot-clj/boot/wiki/JVM-Options[JVM Options].
+
+To get a repl-like dev environment, open a second terminal and start a
+monitor:
+
+[source,shell]
+----
+$ boot gae/monitor
+----
+
+The `gae/monitor` task is a convenience wrapper that uses boot's
+`watch` task to detect changes to the source tree, then propagates
+changes to the correct target dirctory.
+
+Now you can edit the source, and your changes will be included when
+you reload the webpage.  For example, go to
+`http://localhost:8080/hello/bob`.  Then edit the greeting message in
+`src/clj/greetings/hello.clj`.  Save your edit, then reload the page.
+
+If you need to change the configuration, for example to add another
+servlet, you'll have to restart the server.  Rerun `boot gae/build
+target` to reconfigure the webapp, then run `boot gae/run` again.
+
+Remember that with boot it is not enough to run `gae/build`; you than have
+to run the `target` task to put the results of the build on disk where
+appengine expects them.
+
+== troubleshooting
+
+```
+java.lang.NoClassDefFoundError: clojure/lang/Var
+```
+
+Check `<build-root>/WEB-INF/lib` to make sure your jars are there.
+You probably did not run `gae/libs`.
+
+== the code
+
+See the README for https://github.com/migae/boot-gae for more info.
+
+

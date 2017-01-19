@@ -1,0 +1,16 @@
+= uploader
+
+A simple https://cloud.google.com/appengine/docs/java/[Google App
+Engine] webapp, written in 100% https://clojure.org/[Clojure], built
+with http://boot-clj.com/[Boot].
+
+This app demonstrates simple file upload capabilities.
+
+== getting started
+
+[source,clojure]
+----
+$ cd uploader
+$ boot gae/build gae/target gae/run
+----
+

@@ -1,0 +1,6 @@
+{:app-id "boot-gae-greetings"
+ ;; first service listed is default service
+ :services [{:service "default"}
+            {:service "greeter"}
+            {:service "uploader"}]}
+

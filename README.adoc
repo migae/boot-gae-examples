@@ -1,3 +1,12 @@
 = boot-gae-examples
 
 Examples demonstrating use of https://github.com/migae/boot-gae[boot-gae].
+
+Google App Engine offers two "environments": the
+https://cloud.google.com/appengine/docs/about-the-standard-environment[standard
+environment] and the
+https://cloud.google.com/appengine/docs/flexible/[flexible
+environment].  Currently https://github.com/migae/boot-gae[boot-gae]
+only supports the standard environment.
+
+* link:standard-env[Standard environment examples]

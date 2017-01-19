@@ -1,0 +1,2 @@
+{:display-name {:name "upload service"}
+ :descr {:text "This webapp is to be used as an upload service"}}

@@ -1,0 +1,4 @@
+= microservice-app
+
+A sample application demonstrating assembly of a service-based
+application in the GAE Standard Environment.

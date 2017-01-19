@@ -1,0 +1,5 @@
+= flexible environment
+
+The GAE https://cloud.google.com/appengine/docs/flexible/[flexible
+environment] is not yet supported by
+https://github.com/migae/boot-gae[boot-gae].

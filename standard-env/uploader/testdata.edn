@@ -1,0 +1,8 @@
+{:kind :Study
+;; :schema [:study-name :test]
+ :type :Study/#1
+ :data [["StudyA" "test data a"]
+        ["StudyB" "test data b"]
+        ["StudyC" "test data c"]
+        ["StudyD" "test data d"]
+        ["StudyE" "test data e"]]}

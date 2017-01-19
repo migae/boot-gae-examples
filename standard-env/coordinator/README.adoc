@@ -1,0 +1,6 @@
+= coordinator
+
+A sample service application, designed to function as the default
+service in a service-based application.  Not suitable as a stand-alone
+servlet application, because it contains hard-coded references to the
+other services (in this case, `greeter` and `uploader`) in the app.
