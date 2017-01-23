@@ -1,4 +1,3 @@
-{:display-name {:name "boot test app, default module"}
- ;; :module {:name main :default true}
+{:display-name {:name "coordinator service"}
  :descr {:text "description of this web app, for web.xml etc."}}
 
