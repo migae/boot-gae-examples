@@ -1,24 +1,29 @@
 (def +project+ 'tmp/greeter)
-(def +version+ "0.1.0-SNAPSHOT")
+(def +version+ "0.2.0-SNAPSHOT")
 
 (set-env!
- :gae {:app-id "microservices-app"  ; +project+
-       :version +version+
+ :gae {:app {:id "microservices-app"
+             :dir "../microservices-app"}
        :module {:name "greeter"
-                :app-dir (str (System/getProperty "user.home")
-                              "/boot/boot-gae-examples/standard-env/microservices-app")}}
+                :version "v1"}}         ; GAE version string
+
+ ;; :gae {:app-id "microservices-app"
+ ;;       :version +version+
+ ;;       :module {:name "greeter"
+ ;;                :app-dir (str (System/getProperty "user.home")
+ ;;                              "/boot/boot-gae-examples/standard-env/microservices-app")}}
+
  :asset-paths #{"resources/public"}
  :resource-paths #{"src/clj" "filters"}
- :source-paths #{"config" "src/java"}
+ :source-paths #{"config"}
 
- :repositories {"maven-central" "http://mvnrepository.com"
-                "central" "http://repo1.maven.org/maven2/"
-                "clojars" "https://clojars.org/repo"}
+ :repositories #(conj % ["maven-central" {:url "http://mvnrepository.com"}]
+                      ["central" "http://repo1.maven.org/maven2/"])
 
  :dependencies   '[[org.clojure/clojure "1.8.0" :scope "runtime"]
                    [org.clojure/tools.logging "0.3.1"]
 
-                   [migae/boot-gae "0.1.0-SNAPSHOT" :scope "test"]
+                   [migae/boot-gae "0.2.0-SNAPSHOT" :scope "test"]
 
                    [javax.servlet/servlet-api "2.5" :scope "provided"]
 
@@ -75,3 +80,27 @@
         (builtin/sift :move {#"(.*clj$)" (str classes-dir "/$1")})
         (builtin/sift :move {#"(.*\.class$)" (str classes-dir "/$1")})
         ))
+
+
+#_(deftask build
+  "assemble, configure, and build app"
+  [k keep bool "keep intermediate .clj and .edn files"
+   p prod bool "production build, without reloader"
+   v verbose bool "verbose"]
+  (comp (gae/install-sdk :verbose verbose)
+        (gae/libs :verbose verbose)
+        (gae/logging :verbose verbose)
+        (builtin/javac :options ["-target" "1.7"])
+        (if prod identity (gae/reloader :keep keep :verbose verbose))
+        (gae/servlets :keep keep :verbose verbose)
+        (gae/webxml :verbose verbose)
+        (gae/appengine :verbose verbose)
+        (builtin/sift :move {#"(.*clj$)" (str classes-dir "/$1")})
+        (builtin/sift :move {#"(.*\.class$)" (str classes-dir "/$1")})
+        (gae/target)))
+
+#_(deftask deploy
+  "build and deploy"
+  []
+  (build :prod true)
+  (gae/deploy :build-dir "target"))
