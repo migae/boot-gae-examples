@@ -1,38 +1,25 @@
-(def +project+ 'tmp.services/main)
+(def +project+ 'tmp/coordinator)
 (def +version+ "0.2.0-SNAPSHOT")
 
-;; gae does not yet support java 1.8
-;; to set java version on os x put this in ~/.bash_profile
-;; function setjdk() {
-;;   if [ $# -ne 0 ]; then
-;;    removeFromPath '/System/Library/Frameworks/JavaVM.framework/Home/bin'
-;;    if [ -n "${JAVA_HOME+x}" ]; then
-;;     removeFromPath $JAVA_HOME
-;;    fi
-;;    export JAVA_HOME=`/usr/libexec/java_home -v $@`
-;;    export PATH=$PATH:$JAVA_HOME/bin
-;;   fi
-;;  }
-;; then:  $ setjdk 1.7
-
 (set-env!
- :gae {:app-id "microservices-app"  ;; +project+
-       :version +version+
+ :gae {:app {:id "microservices-app"
+             :dir "../microservices-app"}
        :module {:name "default"
-                :app-dir (str (System/getProperty "user.home")
-                              "/boot/boot-gae-examples/standard-env/microservices-app")}}
+                :version "v1"}}
+
  :asset-paths #{"resources/public"}
  :resource-paths #{"src/clj" "filters"}
  :source-paths #{"config"}
 
- :repositories {"maven-central" "http://mvnrepository.com"
-                "clojars" "https://clojars.org/repo"
-                "central" "http://repo1.maven.org/maven2/"}
+ :repositories #(conj % ["maven-central" {:url "http://mvnrepository.com"}]
+                      ["central" "http://repo1.maven.org/maven2/"])
+
+;;                ["clojars" "https://clojars.org/repo"]
 
  :dependencies   '[[org.clojure/clojure "1.8.0" :scope "runtime"]
                    [org.clojure/tools.logging "0.3.1"]
 
-                   [migae/boot-gae "0.1.0-SNAPSHOT" :scope "test"]
+                   [migae/boot-gae "0.2.0-SNAPSHOT" :scope "test"]
 
                    [javax.servlet/servlet-api "2.5" :scope "provided"]
 
