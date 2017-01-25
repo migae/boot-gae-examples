@@ -5,10 +5,10 @@
             [ns-tracker.core :refer :all]))
 
 (defn -init [^Filter this ^FilterConfig cfg]
-  (println "goodbye-filter init invoked"))
+  (log/info "goodbye-filter init invoked"))
 
 (defn -destroy [^Filter this]
-  (println "goodbye-filter destroy invoked"))
+  (log/info "goodbye-filter destroy invoked"))
 
 (defn -doFilter
   [^Filter this
