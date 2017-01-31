@@ -1,8 +1,10 @@
-{:thread-safe true
- :system-properties {:logging {:jul {:name "java.util.logging.config.file"
-                                     :value "WEB-INF/logging.properties"}}
-                     ;; #_{:log4j {:name "java.util.logging.config.file"
-                     ;;          :value "WEB-INF/classes/log4j.properties"}}}
+{:app-id "boot-gae"
+ :module {:name "uploader" :version "v1"}
+ :thread-safe true
+ :system-properties {:logging {;;:jul {:name "java.util.logging.config.file"
+                               ;;      :value "WEB-INF/logging.properties"}
+                               :log4j {:name "java.util.logging.config.file"
+                                       :value "WEB-INF/classes/log4j.properties"}}}
                      ;; :props [{:name "myapp.maximum-message-length" :value "140"}
                      ;;         {:name "myapp.notify-every-n-signups" :value "1000"}
                      ;;         {:name"myapp.notify-url"

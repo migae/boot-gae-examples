@@ -8,13 +8,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 ### Changed
+- move content of web.xml.edn to webapp.edn
+- delete web.xml.edn
+- :gae map from build.boot moved to appengine.edn
+- remove microservices-app, apps now assembled in default module (here: coordinator)
 
 ## [0.1.0]
 ### Added
 
 ### Changed
 - sync with boot-gae 0.1.0
--- restructure :gae map in build.boot
 -- use relative path in :gae :app :dir
 - remove unused files/dirs
 - example projects all use 'tmp as groupid, 0.1.0-SNAPSHOT as version

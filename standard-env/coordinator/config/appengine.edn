@@ -1,5 +1,44 @@
-{:thread-safe true
+{:app-id "boot-gae"
+ :module {:name "default" :version "v1"}
+ :services [{:name "greeter"  :dependency '[tmp/greeter "0.1.0-SNAPSHOT" :module "greeter" :port 8088]}
+            {:name "uploader" :dependency '[tmp/uploader "0.1.0-SNAPSHOT" :module "uploader" :port 8089]}]
+ :thread-safe true
  :system-properties {:logging {:jul {:name "java.util.logging.config.file"
-                                     :value "WEB-INF/logging.properties"}}}
+                                     :value "WEB-INF/logging.properties"}
+                               :log4j {:name "java.util.logging.config.file"
+                                       :value "WEB-INF/classes/log4j.properties"}}
+                     ;; :props [{:name "myapp.maximum-message-length" :value "140"}
+                     ;;         {:name "myapp.notify-every-n-signups" :value "1000"}
+                     ;;         {:name"myapp.notify-url"
+                     ;;          :value "http://www.example.com/supnotfy"}]
+                     }
+
+ ;; :public-root "/static"
+ ;; DO NOT USE env-vars! gae will complain
+ ;; :env-vars [{:name "FOO" :value "BAR"}]
  :sessions true
+ :ssl true
+ :async-session-persistence {:enabled "true" :queue-name "myqueue"}
+ :inbound-services [{:service :mail} {:service :warmup}]
+ :precompilation true
+ :scaling {:basic {:max-instances 11 :idle-timeout "10m"
+                   :instance-class "B2"}
+           :manual {:instances 5
+                    :instance-class "B2"}
+           :automatic {:instance-class "F2"
+                       :idle-instances {:min 5
+                                        ;; ‘automatic’ is the default value.
+                                        :max "automatic"}
+                       :pending-latency {:min "30ms" :max "automatic"}
+                       :concurrent-requests {:max 50}}}
+ ;; :resource-files {:include [{:path "**.xml"
+ ;;                            :expiration "4d h5"
+ ;;                            :http-header {:name "Access-Control-Allow-Origin"
+ ;;                                          :value "http://example.org"}}]
+ ;;                  :exclude [{:path "feed/**.xml"}]}
+ ;; :static-files {:include {:path "foo/**.png"
+ ;;                          :expiration "4d h5"
+ ;;                          :http-header {:name "Access-Control-Allow-Origin"
+ ;;                                        :value "http://example.org"}}
+ ;;                :exclude {:path "bar/**.zip"}}
  }

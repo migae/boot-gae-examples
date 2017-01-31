@@ -1,3 +1,3 @@
 #!/bin/bash
 
-curl --form "file=@$1" localhost:8089/upload
+curl --form "file=@$1" localhost:8080/upload

@@ -9,4 +9,8 @@ https://cloud.google.com/appengine/docs/flexible/[flexible
 environment].  Currently https://github.com/migae/boot-gae[boot-gae]
 only supports the standard environment.
 
+WARNING: GAE Standard Environment does not support Java 1.8 or above.
+Be *sure* to build your app with Java 1.7!
+
+
 * link:standard-env[Standard environment examples]

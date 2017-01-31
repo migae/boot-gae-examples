@@ -2,19 +2,16 @@
 (def +version+ "0.2.0-SNAPSHOT")
 
 (set-env!
- :gae {:app {:id "microservices-app"
-             :dir "../microservices-app"}
-       :module {:name "default"
-                :version "v1"}}
-
  :asset-paths #{"resources/public"}
  :resource-paths #{"src/clj" "filters"}
  :source-paths #{"config"}
 
+ ;; :checkouts '[[tmp/coordinator "0.1.0-SNAPSHOT" :module "default" :port 8083]
+ ;;              [tmp/greeter "0.1.0-SNAPSHOT" :module "greeter" :port 8088]
+ ;;              [tmp/uploader "0.1.0-SNAPSHOT" :module "uploader" :port 8089]]
+
  :repositories #(conj % ["maven-central" {:url "http://mvnrepository.com"}]
                       ["central" "http://repo1.maven.org/maven2/"])
-
-;;                ["clojars" "https://clojars.org/repo"]
 
  :dependencies   '[[org.clojure/clojure "1.8.0" :scope "runtime"]
                    [org.clojure/tools.logging "0.3.1"]
@@ -41,29 +38,40 @@
                    ])
 
 (require '[migae.boot-gae :as gae]
-         '[boot.task.built-in :as builtin])
+         '[boot.task.built-in :as boot])
 
 (task-options!
+ gae/install-service {:project +project+
+                      :version +version+}
  pom  {:project     +project+
        :version     +version+
        :description "Example code, boot, miraj, GAE"
        :license     {"EPL" "http://www.eclipse.org/legal/epl-v10.html"}})
 
-#_(deftask bldtest
-  "make a dev build - including reloader"
+(deftask build
+  "Configure and build servlet or service app"
   [k keep bool "keep intermediate .clj and .edn files"
+   p prod bool "production build, without reloader"
+   s servlet bool "build a servlet-based app DEPRECATED"
    v verbose bool "verbose"]
-  (comp (gae/install-sdk :verbose verbose)
-        (gae/libs :verbose verbose)
-        (gae/logging :verbose verbose)
-        (builtin/show :fileset true)
-        (builtin/sift :to-asset #{#"(.*\.clj$)"}
-                      :move {#"(.*\.clj$)" "WEB-INF/classes/$1"})
-        ;; (clj)
-        ;; (appstats)
-        ;; (filters :keep keep)
-        ;; (servlets :keep keep)
-        ;; (reloader :keep keep)
-        ;; (webxml)
-        ;;(appengine)
-        ))
+  (let [keep (or keep false)
+        verbose (or verbose false)]
+        ;; mod (str (-> (boot/get-env) :gae :module :name))]
+    ;; (println "MODULE: " mod)
+    (comp (gae/install-sdk)
+          (gae/libs :verbose verbose)
+          (gae/appstats :verbose verbose)
+          ;; (boot/javac :options ["-source" "1.7", "-target" "1.7"])
+          (gae/filters :keep (if prod false keep) :verbose verbose)
+          (gae/servlets :keep (if prod false keep) :verbose verbose)
+          (gae/logging :log :log4j :verbose verbose)
+          (gae/config-service)
+          (if prod identity (gae/reloader :keep keep :servlet servlet :verbose verbose))
+          (gae/build-sift)
+          #_(if servlet
+            identity
+            (gae/install-service))
+          (if prod identity (gae/keep-config))
+          (gae/target :servlet servlet :verbose verbose)
+          )))
+

@@ -2,11 +2,6 @@
 (def +version+ "0.2.0-SNAPSHOT")
 
 (set-env!
- :gae {:app {:id "microservices-app"
-             :dir "../microservices-app"}
-       :module {:name "uploader"
-                :version "v1"}}
-
  :asset-paths #{"resources/public"}
  :resource-paths #{"src/clj" "filters"}
  :source-paths #{"config"}
@@ -42,11 +37,36 @@
                    [ns-tracker/ns-tracker "0.3.1"]
                    ])
 
-(require '[migae.boot-gae :as gae]
-         '[boot.task.built-in :as builtin])
+(require '[migae.boot-gae :as gae])
+;;         '[boot.task.built-in :as builtin])
 
 (task-options!
  pom  {:project     +project+
        :version     +version+
        :description "Sample uploader service for GAE app"
        :license     {"EPL" "http://www.eclipse.org/legal/epl-v10.html"}})
+
+(deftask build
+  "Configure and build servlet or service app"
+  [k keep bool "keep intermediate .clj and .edn files"
+   p prod bool "production build, without reloader"
+   s servlet bool "build a servlet-based app DEPRECATED"
+   v verbose bool "verbose"]
+  (let [keep (or keep false)
+        verbose (or verbose false)]
+    (comp (gae/install-sdk)
+          (gae/libs :verbose verbose)
+          (gae/appstats :verbose verbose)
+          (gae/filters :keep (if prod false keep) :verbose verbose)
+          (gae/servlets :keep (if prod false keep) :verbose verbose)
+          (gae/logging :log :log4j :verbose verbose)
+          (gae/config-service)
+          (if prod identity (gae/reloader :keep keep :servlet servlet :verbose verbose))
+          (gae/build-sift)
+          #_(if servlet
+            identity
+            (gae/install-service))
+          (if prod identity (gae/keep-config))
+          (gae/target :servlet servlet :verbose verbose)
+          )))
+

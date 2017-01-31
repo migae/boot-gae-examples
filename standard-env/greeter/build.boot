@@ -1,18 +1,7 @@
-(def +project+ 'tmp/greeter)
-(def +version+ "0.2.0-SNAPSHOT")
+(def +project+ 'tmp.gae/greeter)
+(def +version+ "0.1.0-SNAPSHOT")
 
 (set-env!
- :gae {:app {:id "microservices-app"
-             :dir "../microservices-app"}
-       :module {:name "greeter"
-                :version "v1"}}         ; GAE version string
-
- ;; :gae {:app-id "microservices-app"
- ;;       :version +version+
- ;;       :module {:name "greeter"
- ;;                :app-dir (str (System/getProperty "user.home")
- ;;                              "/boot/boot-gae-examples/standard-env/microservices-app")}}
-
  :asset-paths #{"resources/public"}
  :resource-paths #{"src/clj" "filters"}
  :source-paths #{"config"}
@@ -82,25 +71,36 @@
         ))
 
 
-#_(deftask build
-  "assemble, configure, and build app"
+(deftask build
+  "Configure and build servlet or service app"
   [k keep bool "keep intermediate .clj and .edn files"
    p prod bool "production build, without reloader"
+   s servlet bool "build a servlet-based app DEPRECATED"
    v verbose bool "verbose"]
-  (comp (gae/install-sdk :verbose verbose)
-        (gae/libs :verbose verbose)
-        (gae/logging :verbose verbose)
-        (builtin/javac :options ["-target" "1.7"])
-        (if prod identity (gae/reloader :keep keep :verbose verbose))
-        (gae/servlets :keep keep :verbose verbose)
-        (gae/webxml :verbose verbose)
-        (gae/appengine :verbose verbose)
-        (builtin/sift :move {#"(.*clj$)" (str classes-dir "/$1")})
-        (builtin/sift :move {#"(.*\.class$)" (str classes-dir "/$1")})
-        (gae/target)))
+  (let [keep (or keep false)
+        verbose (or verbose false)]
+        ;; mod (str (-> (boot/get-env) :gae :module :name))]
+    ;; (println "MODULE: " mod)
+    (comp (gae/install-sdk)
+          (gae/libs :verbose verbose)
+          (gae/appstats :verbose verbose)
+          ;; (boot/javac :options ["-source" "1.7", "-target" "1.7"])
+          (gae/filters :keep keep :verbose verbose)
+          (gae/servlets :keep keep :verbose verbose)
+          (gae/logging :log :log4j :verbose verbose)
+          ;; (gae/webxml :verbose verbose)
+          ;; (gae/appengine :verbose verbose)
+          (gae/config-service)
+          (if prod identity (gae/reloader :keep keep :servlet servlet :verbose verbose))
+          (gae/build-sift)
+          #_(if servlet
+            identity
+            (gae/install-service))
+          (gae/keep-config)
+          (gae/target :servlet servlet :verbose verbose)
+          )))
 
-#_(deftask deploy
-  "build and deploy"
+(deftask monitor
+  "monitor"
   []
-  (build :prod true)
-  (gae/deploy :build-dir "target"))
+  (gae/monitor :dir "../coordinator"))
