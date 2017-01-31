@@ -50,27 +50,6 @@
 (def web-inf-dir "WEB-INF")
 (def classes-dir (str web-inf-dir "/classes"))
 
-;; same as gae/build:
-(deftask btest
-  "assemble, configure, and build app"
-  [k keep bool "keep intermediate .clj and .edn files"
-   p prod bool "production build, without reloader"
-   v verbose bool "verbose"]
-  (comp (gae/install-sdk :verbose verbose)
-        (gae/libs :verbose verbose)
-        (gae/logging :verbose verbose)
-        (gae/appstats :verbose verbose)
-        (builtin/javac) ;; :options ["-verbose"])
-        (if prod identity (gae/reloader :keep keep :verbose verbose))
-        (gae/filters :keep keep :verbose verbose)
-        (gae/servlets :keep keep :verbose verbose)
-        (gae/webxml :verbose verbose)
-        (gae/appengine :verbose verbose)
-        (builtin/sift :move {#"(.*clj$)" (str classes-dir "/$1")})
-        (builtin/sift :move {#"(.*\.class$)" (str classes-dir "/$1")})
-        ))
-
-
 (deftask build
   "Configure and build servlet or service app"
   [k keep bool "keep intermediate .clj and .edn files"
