@@ -1,4 +1,4 @@
-(ns greetings.hello
+(ns greeter.hello
   (:refer-clojure :exclude [read read-string])
   (:import #_[com.google.appengine.api.datastore EntityNotFoundException]
            [java.io InputStream ByteArrayInputStream]
@@ -15,21 +15,16 @@
 
 (defroutes hello-routes
   (GET "/hello/:name" [name :as rqst]
-       (do (log/info "hello servlet handler:  greetings.hello on " (:request-method rqst)
+       (do (log/info "hello servlet handler:  greeter.hello on " (:request-method rqst)
                      (str (.getRequestURL (:servlet-request rqst))))
            (-> (rsp/response (str "Hi there from the hello servlet (of the greeter service), " name))
                (rsp/content-type "text/html"))))
 
   (GET "/foo/:name" [name :as rqst]
-       (do (log/info "hello servlet handler:  greetings.hello on " (:request-method rqst)
+       (do (log/info "hello servlet handler:  greeter.hello on " (:request-method rqst)
                      (str (.getRequestURL (:servlet-request rqst))))
            (-> (rsp/response (str name "?  I pity the foo!"))
                (rsp/content-type "text/html"))))
-
-  #_(GET "/shutdown" [rqst]
-         (do (log/info "hello servlet handler:  greetings.hello on " (:request-method rqst)
-                       (str (.getRequestURL (:servlet-request rqst))))
-             (.destroy)))
 
   (route/not-found "<h1>Hello route not found</h1>"))
 

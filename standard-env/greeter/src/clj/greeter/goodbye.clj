@@ -1,4 +1,4 @@
-(ns greetings.goodbye
+(ns greeter.goodbye
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.util.response :as rsp]
@@ -8,7 +8,7 @@
 
 (defroutes goodbye-routes
     (GET "/goodbye/:name" [name]
-         (-> (rsp/response (str "Hasta La Vista, " name "!  From the Goodbye servlet."))
+         (-> (rsp/response (str "So long, " name "!  From the Goodbye servlet."))
              (rsp/content-type "text/html")))
     (route/not-found "<h1>Goodbye route not found</h1>"))
 
