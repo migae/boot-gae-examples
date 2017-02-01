@@ -1,4 +1,4 @@
-{:servlets [{:ns greetings.hello
+{:servlets [{:ns greeter.hello
              :name "hello-servlet"
              :display {:name "Awesome Hello Servlet"}
              :desc {:text "blah blah"}
@@ -6,7 +6,7 @@
              :params [{:name "greeting" :val "Hello"}]
              :load-on-startup {:order 3}}
 
-            {:ns greetings.goodbye
+            {:ns greeter.goodbye
              :name "goodbye-servlet"
              :urls ["/goodbye/*" "/bar/*"]
              :params [{:name "op" :val "+"}

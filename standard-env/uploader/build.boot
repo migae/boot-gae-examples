@@ -1,5 +1,5 @@
-(def +project+ 'tmp/uploader)
-(def +version+ "0.2.0-SNAPSHOT")
+(def +project+ 'tmp.gae/uploader)
+(def +version+ "0.1.0-SNAPSHOT")
 
 (set-env!
  :asset-paths #{"resources/public"}
@@ -41,6 +41,8 @@
 ;;         '[boot.task.built-in :as builtin])
 
 (task-options!
+ gae/install-service {:project     +project+
+                      :version     +version+}
  pom  {:project     +project+
        :version     +version+
        :description "Sample uploader service for GAE app"
@@ -60,12 +62,11 @@
           (gae/filters :keep (if prod false keep) :verbose verbose)
           (gae/servlets :keep (if prod false keep) :verbose verbose)
           (gae/logging :log :log4j :verbose verbose)
-          (gae/config-service)
           (if prod identity (gae/reloader :keep keep :servlet servlet :verbose verbose))
+          (gae/config-service)
           (gae/build-sift)
-          #_(if servlet
-            identity
-            (gae/install-service))
+          ;; (if servlet identity (gae/install-service))
+          (gae/install-service)
           (if prod identity (gae/keep-config))
           (gae/target :servlet servlet :verbose verbose)
           )))

@@ -1,4 +1,4 @@
-(def +project+ 'tmp/coordinator)
+(def +project+ 'tmp.gae/coordinator)
 (def +version+ "0.2.0-SNAPSHOT")
 
 (set-env!
@@ -6,9 +6,8 @@
  :resource-paths #{"src/clj" "filters"}
  :source-paths #{"config"}
 
- ;; :checkouts '[[tmp/coordinator "0.1.0-SNAPSHOT" :module "default" :port 8083]
- ;;              [tmp/greeter "0.1.0-SNAPSHOT" :module "greeter" :port 8088]
- ;;              [tmp/uploader "0.1.0-SNAPSHOT" :module "uploader" :port 8089]]
+ ;; :checkouts '[[tmp.gae/greeter "0.1.0-SNAPSHOT" :module "greeter" :port 8088]
+ ;;              [tmp.gae/uploader "0.1.0-SNAPSHOT" :module "uploader" :port 8089]]
 
  :repositories #(conj % ["maven-central" {:url "http://mvnrepository.com"}]
                       ["central" "http://repo1.maven.org/maven2/"])
@@ -53,25 +52,28 @@
   [k keep bool "keep intermediate .clj and .edn files"
    p prod bool "production build, without reloader"
    s servlet bool "build a servlet-based app DEPRECATED"
+   u unit-test bool "build for unit testing, otherwise for integration testing"
    v verbose bool "verbose"]
   (let [keep (or keep false)
         verbose (or verbose false)]
-        ;; mod (str (-> (boot/get-env) :gae :module :name))]
-    ;; (println "MODULE: " mod)
     (comp (gae/install-sdk)
           (gae/libs :verbose verbose)
           (gae/appstats :verbose verbose)
-          ;; (boot/javac :options ["-source" "1.7", "-target" "1.7"])
           (gae/filters :keep (if prod false keep) :verbose verbose)
           (gae/servlets :keep (if prod false keep) :verbose verbose)
           (gae/logging :log :log4j :verbose verbose)
-          (gae/config-service)
-          (if prod identity (gae/reloader :keep keep :servlet servlet :verbose verbose))
-          (gae/build-sift)
-          #_(if servlet
-            identity
-            (gae/install-service))
+          (if prod identity (gae/reloader :unit-test unit-test
+                                          :keep keep :servlet servlet :verbose verbose))
+          (gae/config-service :unit-test unit-test)
+          (gae/build-sift :unit-test unit-test)
+          ;; (if servlet identity (gae/install-service))
+          ;; (gae/install-service)
           (if prod identity (gae/keep-config))
-          (gae/target :servlet servlet :verbose verbose)
+          (gae/assemble)
+          (gae/config-app)
           )))
 
+(deftask monitor
+  "monitor"
+  []
+  (gae/monitor))

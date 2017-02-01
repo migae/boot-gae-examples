@@ -1,5 +1,7 @@
 {:app-id "boot-gae"
- :module {:name "uploader" :version "v1"}
+;; :module {:name "default" :version "v1"} ;; unit testing
+ :module {:name "uploader" :version "v1"} ;; integration testing, prod
+
  :thread-safe true
  :system-properties {:logging {;;:jul {:name "java.util.logging.config.file"
                                ;;      :value "WEB-INF/logging.properties"}

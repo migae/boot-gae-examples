@@ -1,10 +1,14 @@
 {:app-id "boot-gae"
  :module {:name "default" :version "v1"}
- :services [{:name "greeter"  :dependency '[tmp/greeter "0.1.0-SNAPSHOT" :module "greeter" :port 8088]}
-            {:name "uploader" :dependency '[tmp/uploader "0.1.0-SNAPSHOT" :module "uploader" :port 8089]}]
+
+ :services [{:name "greeter" :port 8088
+             :project tmp.gae/greeter :version "0.1.0-SNAPSHOT"}
+            {:name "uploader" :port 8089
+             :project tmp.gae/uploader :version "0.1.0-SNAPSHOT"}]
+
  :thread-safe true
- :system-properties {:logging {:jul {:name "java.util.logging.config.file"
-                                     :value "WEB-INF/logging.properties"}
+ :system-properties {:logging {;;:jul {:name "java.util.logging.config.file"
+                               ;;      :value "WEB-INF/logging.properties"}
                                :log4j {:name "java.util.logging.config.file"
                                        :value "WEB-INF/classes/log4j.properties"}}
                      ;; :props [{:name "myapp.maximum-message-length" :value "140"}
