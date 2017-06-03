@@ -5,7 +5,7 @@
            [java.util Collections]
            [java.lang IllegalArgumentException RuntimeException]
            [javax.servlet ServletConfig])
-  (:require [clojure.tools.logging :as log :refer [debug info]] ;; :trace, :warn, :error, :fatal
+  (:require [clojure.tools.logging :as log :refer :all] ;; [debug info]] ;; :trace, :warn, :error, :fatal
             [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.util.response :as rsp]
@@ -15,7 +15,7 @@
 
 (defroutes hello-routes
   (GET "/hello/:name" [name :as rqst]
-       (do (log/info "hello servlet handler:  greeter.hello on " (:request-method rqst)
+       (do (log/trace "hello servlet handler:  greeter.hello on " (:request-method rqst)
                      (str (.getRequestURL (:servlet-request rqst))))
            (-> (rsp/response (str "Hi there from the hello servlet (of the greeter service), " name))
                (rsp/content-type "text/html"))))

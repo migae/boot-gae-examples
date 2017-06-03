@@ -38,9 +38,7 @@ service-based app.
 * link:uploader[uploader] - an app that can be used as either as a standard servlet
    app or a microservice in a service-based app.  Demonstrates basic
    file upload functionality.
-* link:microservices-app[microservices-app] - demonstrates assembly of an application from
-  (possibly independent) services; cannot be built and run as a
-  standard servlet app.
+
 * link:coordinator[coordinator] - an app designed to be used as the default service of a
   services-based app.
 
@@ -92,11 +90,6 @@ servlet app will not. But `boot-gae` handles all the housekeeping
 transparently, so the programmer will typically not need to even know
 about this, so long as the `build.boot` and `edn` files are properly
 configured.
-
-WARNING: Services must be installed (`boot install`) before they can
-be assembled into an app. This is because the `build.boot` file for
-the service-based app will list services as `checkout` dependencies.
-See the README for link:microservices-app[microservices-app] for details.
 
 For example, if you build `greeter` as a servlet app, the `target`
 directory will have this structure:

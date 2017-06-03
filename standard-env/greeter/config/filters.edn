@@ -3,8 +3,11 @@
             :display {:name "hello filter"}
             :urls [{:url "/hello/*"}]
             :desc {:text "hello filter"}}
+
            {:ns goodbye-filter
             :name "goodbye filter"
             :display {:name "goodbye filter"}
             :urls [{:url "/goodbye/*"}]
             :desc {:text "goodbye filter"}}]}
+
+;; TODO: add namespace filter

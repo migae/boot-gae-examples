@@ -1,0 +1,7 @@
+;; config for log4j rootLogger
+{:level "INFO"
+ :appender {:name "console"
+            :ns org.apache.log4j.ConsoleAppender
+            :encoding "UTF-8"
+            :layout {:ns org.apache.log4j.EnhancedPatternLayout
+                     :pattern "%d{ISO8601}  %c%n%p: %m%n"}}}

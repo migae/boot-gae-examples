@@ -3,6 +3,15 @@
              :display {:name "Awesome Hello Servlet"}
              :desc {:text "blah blah"}
              :urls ["/hello/*" "/foo/*"]
+             :log4j {:level "ALL"
+                     :ns org.apache.log4j.ConsoleAppender
+                     :additivity "false"
+                     :encoding "UTF-8"
+                     :layout {:ns org.apache.log4j.EnhancedPatternLayout
+                              :pattern "%d{ISO8601}  %c%n%p: %m%n"}}
+             :jul {:level "ALL"
+                   :handler java.util.logging.ConsoleHandler
+                   :formatter java.util.logging.SimpleFormatter}
              :params [{:name "greeting" :val "Hello"}]
              :load-on-startup {:order 3}}
 

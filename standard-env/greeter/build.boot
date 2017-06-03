@@ -63,7 +63,7 @@
           (gae/appstats :verbose verbose)
           (gae/filters :keep keep :verbose verbose)
           (gae/servlets :keep keep :verbose verbose)
-          (gae/logging :log :log4j :verbose verbose)
+          (gae/logging :jul true :verbose verbose)
           (if prod identity (gae/reloader :unit-test unit-test
                                           :keep keep :servlet servlet :verbose verbose))
           (gae/config-service :unit-test unit-test)
@@ -71,6 +71,7 @@
           ;; (if servlet identity (gae/install-service))
           (gae/install-service)
           (if prod identity (gae/keep-config))
+          (target)
           )))
 
 (deftask monitor

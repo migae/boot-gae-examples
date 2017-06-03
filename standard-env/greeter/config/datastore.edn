@@ -1,0 +1,19 @@
+{:empty-list-support true
+ ;; see https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/DatastoreServiceConfig#DATASTORE_EMPTY_LIST_SUPPORT
+
+;; used to generate datastore-indexes.xml, etc
+ :auto-generate false
+ :indices [{:kind "Widget"
+            :props [{:name "x" :dir "asc"}
+                    {:name "date" :dir "asc"}]}]
+;; <datastore-indexes autoGenerate="false">
+;;   <datastore-index kind="Widget">
+;;     <property name="x" direction="asc" />
+;;     <property name="date" direction="asc" />
+;;   </datastore-index>
+;;   <datastore-index kind="Widget">
+;;     <property name="y" direction="asc" />
+;;     <property name="date" direction="asc" />
+;;   </datastore-index>
+;; </datastore-indexes>
+}
