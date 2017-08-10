@@ -12,5 +12,5 @@ only supports the standard environment.
 NOTE: Google
 https://cloudplatform.googleblog.com/2017/06/Google-App-Engine-standard-now-supports-Java-8.html[announced
 support for Java 8] on the GAE Standard Environment on 28 June 2017
-.
+
 * link:standard-env[Standard environment examples]
